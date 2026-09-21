@@ -425,3 +425,52 @@ header {
   height: 16px;
   pointer-events: none; /* so clicks go to the button */
 }
+
+/* ========== MOBILE IMPROVEMENTS ========== */
+@media (max-width: 600px) {
+
+  body {
+    height: 100dvh; /* better than 100vh on mobile */
+  }
+
+  #chat-screen {
+    height: 100dvh;
+    max-width: 100%;
+  }
+
+  header {
+    padding: 0.75rem 1rem;
+  }
+
+  #messages {
+    padding: 0.9rem;
+  }
+
+  .message {
+    max-width: 88%;
+    font-size: 0.95rem;
+  }
+
+  #message-form {
+    padding: 0.7rem 0.9rem;
+    gap: 0.5rem;
+  }
+
+  #message-form input {
+    padding: 0.75rem 1rem;
+    font-size: 16px; /* prevents zoom on iOS */
+  }
+
+  #message-form button,
+  #leave-btn,
+  #theme-btn,
+  #invite-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* Prevent the input from being covered by the keyboard */
+  #chat-screen {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
