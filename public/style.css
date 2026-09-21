@@ -522,3 +522,18 @@ header {
   opacity: 0.55;
   white-space: nowrap;
 }
+
+/* Fix long text overflow in messages */
+.message {
+  max-width: 85%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.message-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap; /* keeps line breaks if any */
+}
