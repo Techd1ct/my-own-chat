@@ -344,14 +344,27 @@ function addMessage(nickname, text, isOwn) {
   const now = new Date();
   const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+  // Convert links into clickable <a> tags
+  const linkedText = linkify(text);
+
   div.innerHTML = `
-    <strong>${escapeHtml(nickname)}</strong>
-    ${escapeHtml(text)}
-    <span class="timestamp">${time}</span>
+    <div class="message-header">
+      <strong>${escapeHtml(nickname)}</strong>
+      <span class="timestamp">${time}</span>
+    </div>
+    <div class="message-content">${linkedText}</div>
   `;
 
   messagesDiv.appendChild(div);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Helper function to turn URLs into clickable links
+function linkify(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return escapeHtml(text).replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  });
 }
 
 function addSystemMessage(text) {
