@@ -1,5 +1,5 @@
 const socket = io({
-  transports: ['websocket', 'polling'], // prefer websocket
+  transports: ['websocket', 'polling'],
   upgrade: true,
   reconnection: true,
   reconnectionAttempts: 10
@@ -11,6 +11,7 @@ let currentNickname = null;
 
 let typingTimeout = null;
 const typingUsers = new Set();
+let currentUsers = [];
 
 // ---------- UI Elements ----------
 const joinScreen = document.getElementById('join-screen');
@@ -26,6 +27,12 @@ const usersBtn = document.getElementById('users-btn');
 const usersPopup = document.getElementById('users-popup');
 const closeUsersBtn = document.getElementById('close-users-btn');
 const usersList = document.getElementById('users-list');
+
+// Link popup elements
+const linkPopup = document.getElementById('link-popup');
+const linkUrlPreview = document.getElementById('link-url-preview');
+const linkCancelBtn = document.getElementById('link-cancel-btn');
+const linkConfirmBtn = document.getElementById('link-confirm-btn');
 
 // ---------- Web Crypto helpers ----------
 async function deriveKey(passphrase, room) {
@@ -109,7 +116,6 @@ document.getElementById('join-btn').addEventListener('click', async () => {
   currentNickname = nickname;
   currentRoom = room;
 
-  // Store the passphrase so we can create invite links later
   window.currentPassphrase = passphrase;
   aesKey = await deriveKey(passphrase, room);
 
@@ -136,14 +142,24 @@ messageForm.addEventListener('submit', async (e) => {
     iv
   });
 
-  // Show our own message immediately
   addMessage(currentNickname, text, true);
 
-  // Stop typing indicator
   socket.emit('stop-typing');
   clearTimeout(typingTimeout);
 
   messageInput.value = '';
+});
+
+// ---------- Typing Detection ----------
+messageInput.addEventListener('input', () => {
+  if (!currentRoom) return;
+
+  socket.emit('typing');
+  clearTimeout(typingTimeout);
+
+  typingTimeout = setTimeout(() => {
+    socket.emit('stop-typing');
+  }, 1500);
 });
 
 // ========== LEAVE ROOM (double click confirmation) ==========
@@ -155,12 +171,10 @@ if (leaveBtn) {
     if (!currentRoom) return;
 
     if (!leaveConfirm) {
-      // First click → ask for confirmation
       leaveConfirm = true;
       leaveBtn.classList.add('confirm');
       leaveBtn.title = 'Click again to leave';
 
-      // Reset after 3 seconds if not confirmed
       clearTimeout(leaveTimeout);
       leaveTimeout = setTimeout(() => {
         leaveConfirm = false;
@@ -168,32 +182,27 @@ if (leaveBtn) {
         leaveBtn.title = 'Leave room';
       }, 3000);
     } else {
-      // Second click → actually leave
       clearTimeout(leaveTimeout);
       leaveConfirm = false;
       leaveBtn.classList.remove('confirm');
       leaveBtn.title = 'Leave room';
 
-      // Tell the server we left
       socket.emit('stop-typing');
       socket.disconnect();
       socket.connect();
 
-      // Reset state
       currentRoom = null;
       currentNickname = null;
       aesKey = null;
       window.currentPassphrase = null;
       typingUsers.clear();
+      currentUsers = [];
 
-      // Clear messages
       messagesDiv.innerHTML = '';
 
-      // Go back to join screen
       chatScreen.classList.add('hidden');
       joinScreen.classList.remove('hidden');
 
-      // Clear the form fields
       document.getElementById('nickname').value = '';
       document.getElementById('room').value = '';
       document.getElementById('passphrase').value = '';
@@ -201,29 +210,17 @@ if (leaveBtn) {
   });
 }
 
-// ---------- Typing Detection ----------
-messageInput.addEventListener('input', () => {
-  if (!currentRoom) return;
-
-  socket.emit('typing');
-
-  clearTimeout(typingTimeout);
-
-  typingTimeout = setTimeout(() => {
-    socket.emit('stop-typing');
-  }, 1500);
-});
-
 // ========== USERS LIST ==========
-let currentUsers = [];
-
 socket.on('room-users', (users) => {
   currentUsers = users;
-  document.getElementById('users-count').textContent = `${users.length} online`;
+  const countEl = document.getElementById('users-count');
+  if (countEl) countEl.textContent = `${users.length} online`;
 });
 
 if (usersBtn) {
   usersBtn.addEventListener('click', () => {
+    if (!usersList) return;
+
     usersList.innerHTML = '';
 
     if (currentUsers.length === 0) {
@@ -236,94 +233,96 @@ if (usersBtn) {
       });
     }
 
-    usersPopup.classList.remove('hidden');
+    if (usersPopup) usersPopup.classList.remove('hidden');
   });
 }
 
 if (closeUsersBtn) {
   closeUsersBtn.addEventListener('click', () => {
-    usersPopup.classList.add('hidden');
+    if (usersPopup) usersPopup.classList.add('hidden');
   });
 }
 
-// Close popup when clicking outside
-usersPopup?.addEventListener('click', (e) => {
-  if (e.target === usersPopup) {
-    usersPopup.classList.add('hidden');
-  }
-});
+if (usersPopup) {
+  usersPopup.addEventListener('click', (e) => {
+    if (e.target === usersPopup) {
+      usersPopup.classList.add('hidden');
+    }
+  });
+}
 
 // ========== EXTERNAL LINK WARNING ==========
-const linkPopup = document.getElementById('link-popup');
-const linkUrlPreview = document.getElementById('link-url-preview');
-const linkCancelBtn = document.getElementById('link-cancel-btn');
-const linkConfirmBtn = document.getElementById('link-confirm-btn');
-
 let pendingLink = null;
 let linkConfirmStep = false;
 let linkTimeout = null;
 
-// Intercept clicks on links inside messages
-messagesDiv.addEventListener('click', (e) => {
-  const link = e.target.closest('a');
-  if (!link) return;
+if (messagesDiv) {
+  messagesDiv.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
 
-  e.preventDefault(); // Stop the normal navigation
+    e.preventDefault();
 
-  pendingLink = link.href;
-  linkUrlPreview.textContent = pendingLink;
-  linkConfirmStep = false;
-  linkConfirmBtn.classList.remove('confirm');
-  linkConfirmBtn.textContent = 'Continue';
+    pendingLink = link.href;
+    if (linkUrlPreview) linkUrlPreview.textContent = pendingLink;
 
-  linkPopup.classList.remove('hidden');
-});
+    linkConfirmStep = false;
+    if (linkConfirmBtn) {
+      linkConfirmBtn.classList.remove('confirm');
+      linkConfirmBtn.textContent = 'Continue';
+    }
 
-// Cancel button
-linkCancelBtn.addEventListener('click', () => {
-  linkPopup.classList.add('hidden');
-  pendingLink = null;
-  linkConfirmStep = false;
-  clearTimeout(linkTimeout);
-});
+    if (linkPopup) linkPopup.classList.remove('hidden');
+  });
+}
 
-// Confirm button (double confirmation)
-linkConfirmBtn.addEventListener('click', () => {
-  if (!pendingLink) return;
-
-  if (!linkConfirmStep) {
-    // First click → ask for confirmation
-    linkConfirmStep = true;
-    linkConfirmBtn.classList.add('confirm');
-    linkConfirmBtn.textContent = 'Click again to open';
-
+if (linkCancelBtn) {
+  linkCancelBtn.addEventListener('click', () => {
+    if (linkPopup) linkPopup.classList.add('hidden');
+    pendingLink = null;
+    linkConfirmStep = false;
     clearTimeout(linkTimeout);
-    linkTimeout = setTimeout(() => {
+  });
+}
+
+if (linkConfirmBtn) {
+  linkConfirmBtn.addEventListener('click', () => {
+    if (!pendingLink) return;
+
+    if (!linkConfirmStep) {
+      linkConfirmStep = true;
+      linkConfirmBtn.classList.add('confirm');
+      linkConfirmBtn.textContent = 'Click again to open';
+
+      clearTimeout(linkTimeout);
+      linkTimeout = setTimeout(() => {
+        linkConfirmStep = false;
+        linkConfirmBtn.classList.remove('confirm');
+        linkConfirmBtn.textContent = 'Continue';
+      }, 3000);
+    } else {
+      clearTimeout(linkTimeout);
+      window.open(pendingLink, '_blank', 'noopener,noreferrer');
+
+      if (linkPopup) linkPopup.classList.add('hidden');
+      pendingLink = null;
       linkConfirmStep = false;
       linkConfirmBtn.classList.remove('confirm');
       linkConfirmBtn.textContent = 'Continue';
-    }, 3000);
-  } else {
-    // Second click → open the link
-    clearTimeout(linkTimeout);
-    window.open(pendingLink, '_blank', 'noopener,noreferrer');
-    linkPopup.classList.add('hidden');
-    pendingLink = null;
-    linkConfirmStep = false;
-    linkConfirmBtn.classList.remove('confirm');
-    linkConfirmBtn.textContent = 'Continue';
-  }
-});
+    }
+  });
+}
 
-// Close when clicking outside the popup
-linkPopup.addEventListener('click', (e) => {
-  if (e.target === linkPopup) {
-    linkPopup.classList.add('hidden');
-    pendingLink = null;
-    linkConfirmStep = false;
-    clearTimeout(linkTimeout);
-  }
-});
+if (linkPopup) {
+  linkPopup.addEventListener('click', (e) => {
+    if (e.target === linkPopup) {
+      linkPopup.classList.add('hidden');
+      pendingLink = null;
+      linkConfirmStep = false;
+      clearTimeout(linkTimeout);
+    }
+  });
+}
 
 // ========== INVITE LINK ==========
 if (inviteBtn) {
@@ -331,7 +330,6 @@ if (inviteBtn) {
     if (!currentRoom) return;
 
     const secret = window.currentPassphrase;
-
     const url = new URL(window.location.href);
     url.hash = `room=${encodeURIComponent(currentRoom)}&secret=${encodeURIComponent(secret)}`;
 
@@ -380,11 +378,9 @@ function toggleTheme() {
   applyTheme(isLight ? 'dark' : 'light');
 }
 
-// Load saved theme
 const savedTheme = localStorage.getItem('theme') || 'dark';
 applyTheme(savedTheme);
 
-// Attach events
 if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 if (themeBtnJoin) themeBtnJoin.addEventListener('click', toggleTheme);
 
@@ -402,10 +398,6 @@ socket.on('user-joined', (data) => {
 
 socket.on('user-left', (data) => {
   addSystemMessage(`${data.nickname} left`);
-});
-
-socket.on('room-users', (users) => {
-  document.getElementById('users-count').textContent = `${users.length} online`;
 });
 
 socket.on('typing', (data) => {
@@ -459,7 +451,6 @@ function addMessage(nickname, text, isOwn) {
   const now = new Date();
   const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // Convert links into clickable <a> tags
   const linkedText = linkify(text);
 
   div.innerHTML = `
@@ -474,7 +465,6 @@ function addMessage(nickname, text, isOwn) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Helper function to turn URLs into clickable links
 function linkify(text) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return escapeHtml(text).replace(urlRegex, (url) => {
