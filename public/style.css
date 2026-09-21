@@ -474,3 +474,16 @@ header {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/* Make Invite button wider so the text fits nicely */
+#invite-btn {
+  width: auto !important;
+  min-width: 70px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

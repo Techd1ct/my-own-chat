@@ -6,7 +6,12 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" } // fine for development / free hosting
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

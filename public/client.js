@@ -1,4 +1,9 @@
-const socket = io();
+const socket = io({
+  transports: ['websocket', 'polling'], // prefer websocket
+  upgrade: true,
+  reconnection: true,
+  reconnectionAttempts: 10
+});
 
 let aesKey = null;
 let currentRoom = null;
