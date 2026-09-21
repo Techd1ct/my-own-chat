@@ -28,6 +28,7 @@
       <span id="users-count"></span>
     </div>
     <div class="header-right">
+      <button id="users-btn" title="See who's here">👥</button>
       <button id="theme-btn" title="Toggle theme">🌙</button>
       <button id="invite-btn" title="Copy invite link">Invite</button>
       <button id="leave-btn" title="Leave room">
@@ -39,6 +40,15 @@
       </button>
     </div>
   </header>
+  <div id="users-popup" class="hidden">
+    <div class="users-popup-content">
+      <div class="users-popup-header">
+       <span>People in this room</span>
+       <button id="close-users-btn">✕</button>
+    </div>
+    <ul id="users-list"></ul>
+   </div>
+ </div>
     <div id="messages"></div>
     <form id="message-form">
       <input id="message-input" placeholder="Type smth..." autocomplete="off" />

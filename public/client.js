@@ -22,6 +22,10 @@ const inviteBtn = document.getElementById('invite-btn');
 const themeBtn = document.getElementById('theme-btn');
 const themeBtnJoin = document.getElementById('theme-btn-join');
 const leaveBtn = document.getElementById('leave-btn');
+const usersBtn = document.getElementById('users-btn');
+const usersPopup = document.getElementById('users-popup');
+const closeUsersBtn = document.getElementById('close-users-btn');
+const usersList = document.getElementById('users-list');
 
 // ---------- Web Crypto helpers ----------
 async function deriveKey(passphrase, room) {
@@ -208,6 +212,45 @@ messageInput.addEventListener('input', () => {
   typingTimeout = setTimeout(() => {
     socket.emit('stop-typing');
   }, 1500);
+});
+
+// ========== USERS LIST ==========
+let currentUsers = [];
+
+socket.on('room-users', (users) => {
+  currentUsers = users;
+  document.getElementById('users-count').textContent = `${users.length} online`;
+});
+
+if (usersBtn) {
+  usersBtn.addEventListener('click', () => {
+    usersList.innerHTML = '';
+
+    if (currentUsers.length === 0) {
+      usersList.innerHTML = '<li>No one else is here</li>';
+    } else {
+      currentUsers.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = user;
+        usersList.appendChild(li);
+      });
+    }
+
+    usersPopup.classList.remove('hidden');
+  });
+}
+
+if (closeUsersBtn) {
+  closeUsersBtn.addEventListener('click', () => {
+    usersPopup.classList.add('hidden');
+  });
+}
+
+// Close popup when clicking outside
+usersPopup?.addEventListener('click', (e) => {
+  if (e.target === usersPopup) {
+    usersPopup.classList.add('hidden');
+  }
 });
 
 // ========== INVITE LINK ==========
