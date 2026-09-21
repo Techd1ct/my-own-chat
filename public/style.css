@@ -1,0 +1,427 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: #0f0f13;
+  color: #e4e4e7;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ========== JOIN SCREEN ========== */
+#join-screen {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+#join-screen h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+#join-screen .hint {
+  font-size: 0.9rem;
+  opacity: 0.65;
+  margin-top: 1.5rem;
+  line-height: 1.4;
+}
+
+#join-screen input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin: 0.45rem 0;
+  border-radius: 12px;
+  border: 1px solid #2a2a35;
+  background: #1a1a22;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+}
+
+#join-screen input:focus {
+  border-color: #6366f1;
+}
+
+#join-screen button {
+  width: 100%;
+  padding: 0.95rem;
+  margin-top: 0.8rem;
+  border-radius: 12px;
+  border: none;
+  background: #6366f1;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#join-screen button:hover {
+  background: #4f46e5;
+}
+
+/* ========== CHAT SCREEN ========== */
+#chat-screen {
+  width: 100%;
+  max-width: 520px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0f0f13;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: #16161d;
+  border-bottom: 1px solid #252530;
+  flex-shrink: 0;
+}
+
+#room-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+#users-count {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  background: #252530;
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+}
+
+/* Messages area */
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ===== ORIGINAL MESSAGE STYLE (exactly as before) ===== */
+.message {
+  background: #1e1e28;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  max-width: 85%;
+}
+
+.message.own {
+  align-self: flex-end;
+  background: #3730a3;
+}
+
+.system {
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin: 0.3rem 0;
+}
+
+.typing {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  font-style: italic;
+  padding: 0.25rem 0.5rem;
+  color: #a1a1aa;
+  margin-top: 0.15rem;
+}
+
+/* Message form */
+#message-form {
+  display: flex;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  background: #16161d;
+  border-top: 1px solid #252530;
+  flex-shrink: 0;
+}
+
+#message-form input {
+  flex: 1;
+  padding: 0.85rem 1.1rem;
+  border-radius: 24px;
+  border: 1px solid #2a2a35;
+  background: #1a1a22;
+  color: white;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+#message-form input:focus {
+  border-color: #6366f1;
+}
+
+#message-form button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #6366f1;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#message-form button:hover {
+  background: #4f46e5;
+}
+
+/* Invite button */
+#invite-btn {
+  background: #252530;
+  color: #e4e4e7;
+  border: 1px solid #3f3f4a;
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#invite-btn:hover {
+  background: #6366f1;
+  border-color: #6366f1;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: #16161d;
+  border-bottom: 1px solid #252530;
+  flex-shrink: 0;
+  gap: 1rem;
+}
+
+header > div {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  #join-screen {
+    padding: 1.5rem 1.2rem;
+  }
+
+  #chat-screen {
+    max-width: 100%;
+  }
+
+  .message {
+    max-width: 88%;
+  }
+
+  header, #messages, #message-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* ========== THEME TOGGLE & TIMESTAMPS ========== */
+
+:root {
+  --bg: #0f0f13;
+  --bg-secondary: #16161d;
+  --bg-message: #1e1e28;
+  --bg-own: #3730a3;
+  --text: #e4e4e7;
+  --text-muted: #a1a1aa;
+  --border: #252530;
+  --input-bg: #1a1a22;
+  --accent: #6366f1;
+}
+
+body.light {
+  --bg: #e8e8ed;                /* soft gray background */
+  --bg-secondary: #ffffff;
+  --bg-message: #e4e4e7;
+  --bg-own: #6366f1;
+  --text: #18181b;
+  --text-muted: #52525b;
+  --border: #a1a1aa;
+  --input-bg: #ffffff;
+  --accent: #4f46e5;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+#chat-screen {
+  background: var(--bg);
+}
+
+header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+#users-count {
+  background: var(--border);
+}
+
+.message {
+  background: var(--bg-message);
+}
+
+.message.own {
+  background: var(--bg-own);
+  color: white;
+}
+
+.system, .typing {
+  color: var(--text-muted);
+}
+
+#message-form {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+}
+
+#message-form input {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+#invite-btn, #theme-btn {
+  background: var(--border);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#theme-btn {
+  padding: 0.35rem 0.7rem;
+  font-size: 1rem;
+}
+
+#invite-btn:hover, #theme-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.timestamp {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.55;
+  margin-top: 0.25rem;
+  font-weight: 400;
+  text-align: right;
+}
+
+.join-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.join-header h1 {
+  margin: 0;
+}
+
+/* Theme button on join screen - smaller + right side */
+.theme-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.2rem;
+}
+
+#theme-btn-join {
+  background: var(--border);
+  color: var(--text);
+  border: 1px solid var(--border);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  padding: 0;
+}
+
+#theme-btn-join:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  transform: scale(1.05);
+}
+
+#leave-btn {
+  background: var(--border);
+  color: var(--text);
+  border: 1px solid var(--border);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+#leave-btn:hover {
+  background: #7f1d1d;
+  border-color: #7f1d1d;
+  color: white;
+}
+
+/* When waiting for second click */
+#leave-btn.confirm {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: white;
+  transform: scale(1.08);
+}
+
+#leave-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none; /* so clicks go to the button */
+}
