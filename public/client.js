@@ -253,6 +253,78 @@ usersPopup?.addEventListener('click', (e) => {
   }
 });
 
+// ========== EXTERNAL LINK WARNING ==========
+const linkPopup = document.getElementById('link-popup');
+const linkUrlPreview = document.getElementById('link-url-preview');
+const linkCancelBtn = document.getElementById('link-cancel-btn');
+const linkConfirmBtn = document.getElementById('link-confirm-btn');
+
+let pendingLink = null;
+let linkConfirmStep = false;
+let linkTimeout = null;
+
+// Intercept clicks on links inside messages
+messagesDiv.addEventListener('click', (e) => {
+  const link = e.target.closest('a');
+  if (!link) return;
+
+  e.preventDefault(); // Stop the normal navigation
+
+  pendingLink = link.href;
+  linkUrlPreview.textContent = pendingLink;
+  linkConfirmStep = false;
+  linkConfirmBtn.classList.remove('confirm');
+  linkConfirmBtn.textContent = 'Continue';
+
+  linkPopup.classList.remove('hidden');
+});
+
+// Cancel button
+linkCancelBtn.addEventListener('click', () => {
+  linkPopup.classList.add('hidden');
+  pendingLink = null;
+  linkConfirmStep = false;
+  clearTimeout(linkTimeout);
+});
+
+// Confirm button (double confirmation)
+linkConfirmBtn.addEventListener('click', () => {
+  if (!pendingLink) return;
+
+  if (!linkConfirmStep) {
+    // First click → ask for confirmation
+    linkConfirmStep = true;
+    linkConfirmBtn.classList.add('confirm');
+    linkConfirmBtn.textContent = 'Click again to open';
+
+    clearTimeout(linkTimeout);
+    linkTimeout = setTimeout(() => {
+      linkConfirmStep = false;
+      linkConfirmBtn.classList.remove('confirm');
+      linkConfirmBtn.textContent = 'Continue';
+    }, 3000);
+  } else {
+    // Second click → open the link
+    clearTimeout(linkTimeout);
+    window.open(pendingLink, '_blank', 'noopener,noreferrer');
+    linkPopup.classList.add('hidden');
+    pendingLink = null;
+    linkConfirmStep = false;
+    linkConfirmBtn.classList.remove('confirm');
+    linkConfirmBtn.textContent = 'Continue';
+  }
+});
+
+// Close when clicking outside the popup
+linkPopup.addEventListener('click', (e) => {
+  if (e.target === linkPopup) {
+    linkPopup.classList.add('hidden');
+    pendingLink = null;
+    linkConfirmStep = false;
+    clearTimeout(linkTimeout);
+  }
+});
+
 // ========== INVITE LINK ==========
 if (inviteBtn) {
   inviteBtn.addEventListener('click', () => {

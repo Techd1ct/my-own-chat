@@ -58,5 +58,20 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="client.js"></script>
+
+  <!-- External Link Warning Popup -->
+  <div id="link-popup" class="hidden">
+    <div class="link-popup-content">
+      <h3>External Link</h3>
+      <p>You are about to leave this chat and open an external website.</p>
+      <p class="link-url" id="link-url-preview"></p>
+      <p class="warning-text">We do not control this website. Continue only if you trust the source.</p>
+    
+      <div class="link-popup-buttons">
+        <button id="link-cancel-btn">Cancel</button>
+        <button id="link-confirm-btn">Continue</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

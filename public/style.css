@@ -623,3 +623,99 @@ header {
   margin-bottom: 0.4rem;
   font-size: 0.95rem;
 }
+
+/* External Link Warning Popup */
+#link-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+#link-popup.hidden {
+  display: none;
+}
+
+.link-popup-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 360px;
+  padding: 1.5rem;
+  color: var(--text);
+  text-align: center;
+}
+
+.link-popup-content h3 {
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+}
+
+.link-popup-content p {
+  margin-bottom: 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.link-url {
+  background: var(--bg-message);
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  word-break: break-all;
+  color: var(--accent);
+}
+
+.warning-text {
+  font-size: 0.85rem !important;
+  opacity: 0.8;
+  color: #f87171;
+}
+
+.link-popup-buttons {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
+}
+
+.link-popup-buttons button {
+  flex: 1;
+  padding: 0.7rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#link-cancel-btn {
+  background: var(--border);
+  color: var(--text);
+}
+
+#link-cancel-btn:hover {
+  background: #3f3f46;
+}
+
+#link-confirm-btn {
+  background: #dc2626;
+  color: white;
+}
+
+#link-confirm-btn:hover {
+  background: #b91c1c;
+}
+
+/* When waiting for second confirmation */
+#link-confirm-btn.confirm {
+  background: #ef4444;
+  transform: scale(1.03);
+}
