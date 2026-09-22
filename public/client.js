@@ -150,6 +150,16 @@ messageForm.addEventListener('submit', async (e) => {
   messageInput.value = '';
 });
 
+const landingScreen = document.getElementById('landing-screen');
+const enterChatBtn = document.getElementById('enter-chat-btn');
+
+if (enterChatBtn) {
+  enterChatBtn.addEventListener('click', () => {
+    landingScreen.classList.add('hidden');
+    joinScreen.classList.remove('hidden');
+  });
+}
+
 // ---------- Typing Detection ----------
 messageInput.addEventListener('input', () => {
   if (!currentRoom) return;
