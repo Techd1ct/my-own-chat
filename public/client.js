@@ -28,6 +28,16 @@ const usersPopup = document.getElementById('users-popup');
 const closeUsersBtn = document.getElementById('close-users-btn');
 const usersList = document.getElementById('users-list');
 
+// ========== LANDING EXPAND ANIMATION ==========
+const landingScreen = document.getElementById('landing-screen');
+const enterChatBtn = document.getElementById('enter-chat-btn');
+const expandCircle = document.getElementById('expand-circle');
+const afterExpand = document.getElementById('after-expand');
+const themeBtnLanding = document.getElementById('theme-btn-landing');
+const loveQuestion = document.querySelector('.love-question');
+const miniBubble = document.querySelector('.mini-bubble');
+
+
 // Link popup elements
 const linkPopup = document.getElementById('link-popup');
 const linkUrlPreview = document.getElementById('link-url-preview');
@@ -150,13 +160,40 @@ messageForm.addEventListener('submit', async (e) => {
   messageInput.value = '';
 });
 
-const landingScreen = document.getElementById('landing-screen');
-const enterChatBtn = document.getElementById('enter-chat-btn');
+
 
 if (enterChatBtn) {
   enterChatBtn.addEventListener('click', () => {
-    landingScreen.classList.add('hidden');
-    joinScreen.classList.remove('hidden');
+    // Start circle expansion
+    expandCircle.classList.add('active');
+    landingScreen.classList.add('expanded');
+
+    // After circle finishes expanding
+    setTimeout(() => {
+      afterExpand.classList.remove('hidden');
+      afterExpand.classList.add('visible');
+
+      // Sequence of appearances
+      setTimeout(() => {
+        themeBtnLanding.classList.add('show');
+      }, 200);
+
+      setTimeout(() => {
+        loveQuestion.classList.add('show');
+      }, 700);
+
+      setTimeout(() => {
+        miniBubble.classList.add('show');
+      }, 1200);
+
+    }, 900); // matches the circle animation duration
+  });
+}
+
+// Theme button on the white screen
+if (themeBtnLanding) {
+  themeBtnLanding.addEventListener('click', () => {
+    toggleTheme(); // reuses your existing theme function
   });
 }
 
@@ -497,3 +534,4 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+
