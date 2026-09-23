@@ -52,18 +52,18 @@ body.light {
 /* ===============================
    LANDING PAGE
 ================================= */
-/* ========== LANDING PAGE ========== */
+
 #landing-screen {
-  background: #0f0f13 !important;
   width: 100%;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
+  background: #0f0f13;           /* Force black at the beginning */
   text-align: center;
-  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .main-title {
@@ -76,9 +76,10 @@ body.light {
   transition: all 0.35s ease;
   -webkit-text-stroke: 0px transparent;
   user-select: none;
+  z-index: 10;
 }
 
-/* Hover effect: transparent + red outline + bigger size */
+/* Hover effect */
 .main-title:hover {
   color: transparent;
   -webkit-text-stroke: 2px #ef4444;
@@ -88,17 +89,18 @@ body.light {
 .landing-subtitle {
   margin-top: 1.2rem;
   font-size: 1.25rem;
-  color: var(--text-muted);
+  color: #a1a1aa;
   opacity: 0.85;
   letter-spacing: 1px;
   transition: opacity 0.3s ease;
+  z-index: 10;
 }
 
 #landing-screen:hover .landing-subtitle {
   opacity: 1;
 }
 
-/* ========== EXPANDING CIRCLE TRANSITION ========== */
+/* Expanding circle */
 #expand-circle {
   position: fixed;
   top: 50%;
@@ -117,16 +119,13 @@ body.light {
 
 #expand-circle.active {
   transform: translate(-50%, -50%) scale(80);
-  opacity: 0; /* fades out while expanding */
+  opacity: 0;
 }
 
-/* After expansion content */
+/* After expansion */
 #landing-screen.expanded {
-  pointer-events: none;
-}
-
-#after-expand {
-  pointer-events: auto;
+  background: white !important;
+  pointer-events: none;          /* ← This fixes the whole screen being clickable */
 }
 
 #after-expand {
@@ -158,6 +157,7 @@ body.light {
   opacity: 0;
   transform: translateY(15px);
   transition: all 0.5s ease;
+  z-index: 70;
 }
 
 #theme-btn-landing.show {
@@ -165,11 +165,11 @@ body.light {
   transform: translateY(0);
 }
 
-/* Question text - upper area, slightly to the right */
+/* Question text */
 .love-question {
   position: absolute;
-  top: 30%;
-  left: 30%;
+  top: 28%;
+  left: 12%;
   font-size: clamp(1.8rem, 4vw, 2.7rem);
   font-weight: 600;
   color: #18181b;
@@ -178,7 +178,6 @@ body.light {
   opacity: 0;
   transform: translateY(25px);
   transition: all 0.5s ease;
-  white-space: nowrap;
 }
 
 .love-question.show {
@@ -186,13 +185,13 @@ body.light {
   transform: translateY(0);
 }
 
-/* Mini bubble - aligned to the right of the text */
+/* Mini bubble */
 .mini-bubble {
   position: absolute;
-  top: 30%;
-  left: 70%;
-  background: #e4e4e7;   /* darker than before */
-  border: 1px solid #d4d4d8;
+  top: 42%;
+  left: 12%;
+  background: #d4d4d8;           /* darker */
+  border: 1px solid #a1a1aa;
   border-radius: 18px;
   padding: 0.9rem 1.2rem;
   width: min(85vw, 360px);
@@ -215,18 +214,13 @@ body.light {
   color: #18181b;
 }
 
-/* When landing is in "white mode" */
-#landing-screen.expanded {
-  background: white;
-}
-
+/* Hide original title when expanded */
 #landing-screen.expanded .main-title,
 #landing-screen.expanded .landing-subtitle {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
 }
-
 /* ===============================
    JOIN SCREEN
 ================================= */
@@ -738,5 +732,24 @@ header {
 
   #chat-screen {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@media (max-width: 600px) {
+  .love-question {
+    top: 22%;
+    left: 8%;
+    font-size: 1.6rem;
+  }
+
+  .mini-bubble {
+    top: 38%;
+    left: 8%;
+    width: 84vw;
+  }
+
+  #theme-btn-landing {
+    top: 1.2rem;
+    right: 1.2rem;
   }
 }
