@@ -164,36 +164,26 @@ messageForm.addEventListener('submit', async (e) => {
 
 if (enterChatBtn) {
   enterChatBtn.addEventListener('click', () => {
-    // Start circle expansion
     expandCircle.classList.add('active');
     landingScreen.classList.add('expanded');
 
-    // After circle finishes expanding
+    // Switch to light theme when expanding
+    applyTheme('light');
+
     setTimeout(() => {
       afterExpand.classList.remove('hidden');
       afterExpand.classList.add('visible');
 
-      // Sequence of appearances
-      setTimeout(() => {
-        themeBtnLanding.classList.add('show');
-      }, 200);
-
-      setTimeout(() => {
-        loveQuestion.classList.add('show');
-      }, 700);
-
-      setTimeout(() => {
-        miniBubble.classList.add('show');
-      }, 1200);
-
-    }, 900); // matches the circle animation duration
+      setTimeout(() => themeBtnLanding?.classList.add('show'), 200);
+      setTimeout(() => loveQuestion?.classList.add('show'), 700);
+      setTimeout(() => miniBubble?.classList.add('show'), 1200);
+    }, 900);
   });
 }
 
-// Theme button on the white screen
 if (themeBtnLanding) {
   themeBtnLanding.addEventListener('click', () => {
-    toggleTheme(); // reuses your existing theme function
+    toggleTheme();
   });
 }
 
@@ -427,8 +417,11 @@ function toggleTheme() {
   applyTheme(isLight ? 'dark' : 'light');
 }
 
+// Always force dark theme when the page loads (for the landing screen)
+applyTheme('dark');
+
+// We still save the preference, but the landing page will always start dark
 const savedTheme = localStorage.getItem('theme') || 'dark';
-applyTheme(savedTheme);
 
 if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 if (themeBtnJoin) themeBtnJoin.addEventListener('click', toggleTheme);
