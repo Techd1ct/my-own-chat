@@ -60,7 +60,7 @@ body.light {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #0f0f13 !important;          /* Force black at the beginning */
+  background: #0f0f13;          /* Force black at the beginning */
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -124,10 +124,11 @@ body.light {
 
 /* After expansion */
 #landing-screen.expanded {
-  background: white !important;
+  background: white;
   pointer-events: none;          /* ← This fixes the whole screen being clickable */
 }
 
+/* After expansion content */
 #after-expand {
   position: fixed;
   inset: 0;
@@ -218,6 +219,16 @@ body.light {
   outline: none;
   font-size: 1rem;
   color: var(--text);
+}
+
+/* Force initial background black */
+#landing-screen {
+  background: #0f0f13 !important;
+}
+
+/* When expanded → force white */
+#landing-screen.expanded {
+  background: white !important;
 }
 
 /* Hide original title when expanded */
