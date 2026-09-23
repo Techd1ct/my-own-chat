@@ -412,10 +412,12 @@ function applyTheme(theme) {
     document.body.classList.add('light');
     if (themeBtn) themeBtn.textContent = '☀️';
     if (themeBtnJoin) themeBtnJoin.textContent = '☀️';
+    if (themeBtnLanding) themeBtnLanding.textContent = '☀️';
   } else {
     document.body.classList.remove('light');
     if (themeBtn) themeBtn.textContent = '🌙';
     if (themeBtnJoin) themeBtnJoin.textContent = '🌙';
+    if (themeBtnLanding) themeBtnLanding.textContent = '🌙';
   }
   localStorage.setItem('theme', theme);
 }

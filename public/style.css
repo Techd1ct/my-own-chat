@@ -60,7 +60,7 @@ body.light {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #0f0f13;           /* Force black at the beginning */
+  background: #0f0f13 !important;          /* Force black at the beginning */
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -146,9 +146,9 @@ body.light {
   position: absolute;
   top: 1.8rem;
   right: 1.8rem;
-  background: #e5e5e5;
-  color: #18181b;
-  border: 1px solid #d4d4d8;
+  background: var(--border);
+  color: var(--text);
+  border: 1px solid var(--border);
   width: 42px;
   height: 42px;
   border-radius: 50%;
@@ -165,6 +165,12 @@ body.light {
   transform: translateY(0);
 }
 
+#theme-btn-landing:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
 /* Question text */
 .love-question {
   position: absolute;
@@ -172,7 +178,7 @@ body.light {
   left: 12%;
   font-size: clamp(1.8rem, 4vw, 2.7rem);
   font-weight: 600;
-  color: #18181b;
+  color: var(--text);
   max-width: 420px;
   line-height: 1.3;
   opacity: 0;
@@ -190,8 +196,8 @@ body.light {
   position: absolute;
   top: 42%;
   left: 12%;
-  background: #d4d4d8;           /* darker */
-  border: 1px solid #a1a1aa;
+  background: var(--bg-message);
+  border: 1px solid var(--border);
   border-radius: 18px;
   padding: 0.9rem 1.2rem;
   width: min(85vw, 360px);
@@ -211,7 +217,7 @@ body.light {
   background: transparent;
   outline: none;
   font-size: 1rem;
-  color: #18181b;
+  color: var(--text);
 }
 
 /* Hide original title when expanded */
