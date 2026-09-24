@@ -82,7 +82,14 @@ function getUsersInRoom(room) {
   return users;
 }
 
+// Serve the frontend for any route (important for /chat)
+// Serve the frontend for any unknown route (needed for /chat)
+app.get('/*splat', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+

@@ -27,6 +27,7 @@ const usersBtn = document.getElementById('users-btn');
 const usersPopup = document.getElementById('users-popup');
 const closeUsersBtn = document.getElementById('close-users-btn');
 const usersList = document.getElementById('users-list');
+const backToLandingBtn = document.getElementById('back-to-landing-btn');
 
 // ========== LANDING EXPAND ANIMATION ==========
 const landingScreen = document.getElementById('landing-screen');
@@ -43,6 +44,25 @@ const linkPopup = document.getElementById('link-popup');
 const linkUrlPreview = document.getElementById('link-url-preview');
 const linkCancelBtn = document.getElementById('link-cancel-btn');
 const linkConfirmBtn = document.getElementById('link-confirm-btn');
+
+// ========== SIMPLE ROUTING ==========
+function handleRouting() {
+  const path = window.location.pathname;
+
+  if (path === '/chat') {
+    // Hide landing, show join screen
+    if (landingScreen) landingScreen.classList.add('hidden');
+    if (joinScreen) joinScreen.classList.remove('hidden');
+  } else {
+    // Default → show landing page
+    if (landingScreen) landingScreen.classList.remove('hidden');
+    if (joinScreen) joinScreen.classList.add('hidden');
+    if (chatScreen) chatScreen.classList.add('hidden');
+  }
+}
+
+// Run on page load
+handleRouting();
 
 // ---------- Web Crypto helpers ----------
 async function deriveKey(passphrase, room) {
@@ -137,6 +157,34 @@ document.getElementById('join-btn').addEventListener('click', async () => {
   messageInput.focus();
 });
 
+// ========== LOVE REPLY LOGIC ==========
+const loveReplyInput = document.getElementById('love-reply');
+
+if (loveReplyInput) {
+  loveReplyInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      const answer = loveReplyInput.value.trim().toLowerCase();
+
+      if (answer === 'yes') {
+        // Redirect to /chat
+        window.location.href = '/chat';
+      } else {
+        // Wrong answer → clear input and maybe give feedback
+        loveReplyInput.value = '';
+        loveReplyInput.placeholder = 'Try again...';
+        
+        // Optional: small shake animation or feedback
+        loveReplyInput.style.borderColor = '#ef4444';
+        setTimeout(() => {
+          loveReplyInput.style.borderColor = '';
+        }, 800);
+      }
+    }
+  });
+}
+
 // ---------- Send Message ----------
 messageForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -181,9 +229,12 @@ if (enterChatBtn) {
   });
 }
 
-if (themeBtnLanding) {
-  themeBtnLanding.addEventListener('click', () => {
-    toggleTheme();
+
+
+if (backToLandingBtn) {
+  backToLandingBtn.addEventListener('click', () => {
+    // Go back to the main landing page
+    window.location.href = '/';
   });
 }
 
@@ -397,6 +448,8 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========== THEME TOGGLE ==========
+// ========== THEME TOGGLE ==========
+// ========== THEME TOGGLE ==========
 function applyTheme(theme) {
   if (theme === 'light') {
     document.body.classList.add('light');
@@ -417,14 +470,25 @@ function toggleTheme() {
   applyTheme(isLight ? 'dark' : 'light');
 }
 
-// Always force dark theme when the page loads (for the landing screen)
-applyTheme('dark');
+// Load theme correctly depending on the page
+const path = window.location.pathname;
 
-// We still save the preference, but the landing page will always start dark
-const savedTheme = localStorage.getItem('theme') || 'dark';
+if (path === '/chat') {
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  applyTheme(savedTheme);
+} else {
+  // Landing page always starts dark
+  applyTheme('dark');
+}
 
+// Attach event listeners
 if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 if (themeBtnJoin) themeBtnJoin.addEventListener('click', toggleTheme);
+
+// Important: this one must be attached
+if (themeBtnLanding) {
+  themeBtnLanding.addEventListener('click', toggleTheme);
+}
 
 // ---------- Socket Events ----------
 socket.on('encrypted-message', async (data) => {

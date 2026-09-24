@@ -71,7 +71,7 @@ body.light {
 }
 
 .main-title {
-  font-family: "Night Shift", "Arial Black", Impact, sans-serif;
+  font-family: "Archivo Black", "Arial Black", Impact, sans-serif;
   font-size: clamp(4rem, 12vw, 8rem);
   color: #ef4444;
   margin: 0;
@@ -316,6 +316,35 @@ body.light {
   border-color: var(--accent);
   color: white;
   transform: scale(1.05);
+}
+
+.theme-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+#back-to-landing-btn {
+  background: var(--border);
+  color: var(--text);
+  border: 1px solid var(--border);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+#back-to-landing-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
 }
 
 /* ===============================
